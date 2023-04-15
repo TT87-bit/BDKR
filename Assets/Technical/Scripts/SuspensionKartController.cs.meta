@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: d8fa2265090bb59469c0b1bb14c29c29
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - vehicleStats: {fileID: 11400000, guid: 24317fdc13caa6049b5cb0d1febf4518, type: 2}
+  - character1Stats: {instanceID: 0}
+  - character2Stats: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
