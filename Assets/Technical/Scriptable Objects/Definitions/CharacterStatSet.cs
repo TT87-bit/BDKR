@@ -5,5 +5,12 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Character Stat Set", menuName = "Stat Thing/Character Stat Set")]
 public class CharacterStatSet : StatSet
 {
-    public float fallChance;
+    [SerializeField] protected float fallChance;
+
+    public new void OnEnable()
+    {
+        base.OnEnable();
+        baseStats.Add("fallChance", fallChance);
+    }
+
 }

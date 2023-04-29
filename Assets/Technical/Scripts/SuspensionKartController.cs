@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,9 +9,9 @@ public class SuspensionKartController : MonoBehaviour
     [SerializeField] VehicleStatSet vehicleStats;
     [SerializeField] CharacterStatSet character1Stats;
     [SerializeField] CharacterStatSet character2Stats;
-    StatSet config1Stats;
-    StatSet config2Stats;
-    StatSet activeConfigStats;
+    CharacterStatSet config1Stats;
+    CharacterStatSet config2Stats;
+    CharacterStatSet activeConfigStats;
     float configTopSpeed;
     float configAcceleration;
     float configHandling;
@@ -34,7 +35,7 @@ public class SuspensionKartController : MonoBehaviour
 
     [Header ("Movement/Physics Calculation")]
     float wheelPush = 0f; //How far the wheels are "trying" to push the kart forward, before grip is taken into account; purely based on how fast they'd be turning. Negative value means the kart is trying to reverse.
-    float totalTraction; //The traction stat of the player's current configuration, times the average of all 0-1 traction values each grounded suspension object gets from the bit of floor they're over.
+    float totalTraction; //The traction stat of the player's current configuration, times the average of all 0-1 traction values each grounded suspension object gets from the bit of floor they're over. Midair wheels will return 0 for this.
     float grippedPush = 0f; //wheelPush * totalTraction.
     float currentSteer = 0f;
     float goalSteer = 0f; //Current horizontal turn input * the vehicle's current handling stat. What currentSteer approaches by steerAcceleration units each frame
@@ -96,29 +97,39 @@ public class SuspensionKartController : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Uses the current vehicle's frontCharInfluence stat to calculate base stats for each position the player can have the characters on the kart.
+    /// </summary>
     void CalculateConfigStats()
     {
         float frontCharInfluence = vehicleStats.frontInfluence;
         float backCharInfluence = frontCharInfluence - 1;
 
-        float[] character1StatsArray = character1Stats.Stats2Array();
-        float[] character2StatsArray = character2Stats.Stats2Array();
-        float[] vehicleStatsArray = vehicleStats.Stats2Array();
-
-        float[] config1StatsArray = {0};
-        for(int i = 0; i < character1StatsArray.Length; i++)
+        foreach(string stat in character1Stats.statNames)
         {
-            config1StatsArray[i] = (character1StatsArray[i] * frontCharInfluence + character2StatsArray[i] * backCharInfluence + vehicleStatsArray[i]) / 2;
+            if(Array.IndexOf(additiveStats, stat) != -1)
+            {
+                float value = character1Stats.GetStat(stat) + character2Stats.GetStat(stat) + vehicleStats.GetStat(stat);
+                config1Stats.SetStat(stat, value);
+                config2Stats.SetStat(stat, value);
+            }
+            else if(Array.IndexOf(frontOnlyStats, stat) != -1)
+            {
+                config1Stats.SetStat(stat, character1Stats.GetStat(stat));
+                config2Stats.SetStat(stat, character2Stats.GetStat(stat));
+            }
+            else if(Array.IndexOf(backOnlyStats, stat) != -1)
+            {
+                config1Stats.SetStat(stat, character2Stats.GetStat(stat));
+                config2Stats.SetStat(stat, character1Stats.GetStat(stat));
+            }
+            else
+            {
+                float value = (character1Stats.GetStat(stat) * frontCharInfluence + character2Stats.GetStat(stat) * backCharInfluence + vehicleStats.GetStat(stat)) / 2;
+                config1Stats.SetStat(stat, value);
+                value = (character2Stats.GetStat(stat) * frontCharInfluence + character1Stats.GetStat(stat) * backCharInfluence + vehicleStats.GetStat(stat)) / 2;
+                config1Stats.SetStat(stat, value);
+            }
         }
-        config1Stats.array2Stats(character1StatsArray);
-
-        float[] config2StatsArray = {0};
-        for(int i = 0; i < character1StatsArray.Length; i++)
-        {
-            config2StatsArray[i] = (character2StatsArray[i] * frontCharInfluence + character1StatsArray[i] * backCharInfluence + vehicleStatsArray[i]) / 2;
-        }
-        config2Stats.array2Stats(character2StatsArray);
     }
-
-    
 }

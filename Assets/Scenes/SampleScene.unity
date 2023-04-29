@@ -3275,7 +3275,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc077cea58ccc8f4da4d3a4da5ac970f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  checkpointObjects: []
 --- !u!4 &967819980
 Transform:
   m_ObjectHideFlags: 0
@@ -4276,7 +4275,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1368358863}
-  m_LocalRotation: {x: -0.06480579, y: -0.00000002022084, z: -0.00000014464223, w: -0.9978979}
+  m_LocalRotation: {x: -0.0648058, y: -0.00000001035259, z: -0.0000001452831, w: -0.9978979}
   m_LocalPosition: {x: -6.2, y: 89.31, z: 72.46}
   m_LocalScale: {x: 1.0000004, y: 1, z: 1.0000005}
   m_Children: []
@@ -5690,7 +5689,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1755791259}
-  m_LocalRotation: {x: -0.06480579, y: -0.00000002022084, z: -0.00000014464223, w: -0.9978979}
+  m_LocalRotation: {x: -0.0648058, y: -0.00000001035259, z: -0.0000001452831, w: -0.9978979}
   m_LocalPosition: {x: -6.2, y: 89.31, z: 72.46}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -5984,8 +5983,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   vehicleStats: {fileID: 11400000, guid: 24317fdc13caa6049b5cb0d1febf4518, type: 2}
-  character1Stats: {fileID: 11400000, guid: 8a8fc45e2a90fee4092b0af5ce88a908, type: 2}
-  character2Stats: {fileID: 11400000, guid: 564f9aa6cbcc81d4fa5ac5c1f506a638, type: 2}
+  character1Stats: {fileID: 0}
+  character2Stats: {fileID: 0}
   suspensionObjects:
   - {fileID: 2028405606}
   - {fileID: 1380996628}
