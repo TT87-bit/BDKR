@@ -47,6 +47,11 @@ public class SuspensionKartController : MonoBehaviour
     Vector3 worldVelocity;
     Vector3 previousWorldVelocity;
 
+    public string[] NameArray;
+
+    [Dropdown("NameArray")]//input the path of the array
+    public string MyName;
+
     [Header ("Other")]
     [SerializeField] float swtichSpeed;
     float switchTimer;
