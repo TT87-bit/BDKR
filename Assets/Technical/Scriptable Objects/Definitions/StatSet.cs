@@ -22,7 +22,7 @@ public class StatSet : ScriptableObject
         }
     }
 
-    protected void OnEnable() {
+    public void OnEnable() {
         baseStats = new Hashtable{
             {"topSpeed", topSpeed},
             {"acceleration", acceleration},
@@ -31,6 +31,7 @@ public class StatSet : ScriptableObject
             {"traction", traction},
             {"offroad", offroad}
         };
+        Debug.Log(baseStats);
     }
 
     public void SetStat(string name, float value)
@@ -65,7 +66,6 @@ public class StatSet : ScriptableObject
 
     // datas
     //HashMap<string, float> stats = new HashMap<string, float>();
-
     ArrayList modifiers = new ArrayList();
 
     //Apply() {

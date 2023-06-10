@@ -16,5 +16,7 @@ MonoBehaviour:
   overwriteGreater: 0
   overwriteLesser: 0
   fromOffRoad: 0
-  duration: 0
-  stats: []
+  duration: 3
+  stats:
+  - name: TopSpeed
+    value: 4

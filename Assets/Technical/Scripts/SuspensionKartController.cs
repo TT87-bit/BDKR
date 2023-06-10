@@ -11,7 +11,8 @@ public class SuspensionKartController : MonoBehaviour
     [SerializeField] CharacterStatSet character2Stats;
     CharacterStatSet config1Stats;
     CharacterStatSet config2Stats;
-    CharacterStatSet activeConfigStats;
+    public CharacterStatSet activeConfigStats; //input for applying modifiers to kart
+    CharacterStatSet postModifierStats; //activeConfigStats after applying modifiers, used for calculations
     float configTopSpeed;
     float configAcceleration;
     float configHandling;
@@ -26,8 +27,8 @@ public class SuspensionKartController : MonoBehaviour
     const float speedBonusPerToken = 2f;
     const float drag = 0.1f;
     readonly string[] additiveStats = {"weight"};
-    readonly string[] frontOnlyStats;
-    readonly string[] backOnlyStats;
+    readonly string[] frontOnlyStats = {};
+    readonly string[] backOnlyStats = {};
 
     [Header ("Suspension Stuff")]
     [SerializeField] GameObject[] suspensionObjects;
@@ -46,11 +47,7 @@ public class SuspensionKartController : MonoBehaviour
     Vector2 previousVelocityFromWheels;
     Vector3 worldVelocity;
     Vector3 previousWorldVelocity;
-
-    public string[] NameArray;
-
-    [Dropdown("NameArray")]//input the path of the array
-    public string MyName;
+    
 
     [Header ("Other")]
     [SerializeField] float swtichSpeed;
@@ -58,7 +55,13 @@ public class SuspensionKartController : MonoBehaviour
 
     private void Awake() 
     {
+        config1Stats = new CharacterStatSet();
+        config2Stats = new CharacterStatSet();
+        
         CalculateConfigStats();
+        activeConfigStats = config1Stats;
+
+        suspensionScripts = new Suspension[suspensionObjects.Length];
 
         for(int i = 0; i < suspensionObjects.Length; i++)
         {
@@ -112,6 +115,7 @@ public class SuspensionKartController : MonoBehaviour
 
         foreach(string stat in character1Stats.statNames)
         {
+            print(stat);
             if(Array.IndexOf(additiveStats, stat) != -1)
             {
                 float value = character1Stats.GetStat(stat) + character2Stats.GetStat(stat) + vehicleStats.GetStat(stat);

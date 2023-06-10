@@ -4,20 +4,16 @@ using System.ComponentModel;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Stat Modifier", menuName = "Stat Thing/Stat Modifier")]
-public class StatModifier : ScriptableObject
+public class StatModifier : ScriptableObject, IComparer<StatModifier>
 {
     public float order;
-    public bool overwriteGreater;
-    public bool overwriteLesser;
     public bool fromOffRoad = false;
     public float duration;
     [SerializeField] Stat[] stats;
 
-    public StatModifier Instantiate() {
-        //Create copy of instance
-        StatModifier instance = (StatModifier)ScriptableObject.CreateInstance(nameof(StatModifier));
-        Debug.Log(instance.duration);
-        return instance;
+    public int Compare(StatModifier x, StatModifier y)
+    {
+        return Mathf.FloorToInt(x.order - y.order);
     }
 }
 
@@ -26,4 +22,6 @@ public class Stat
 {
     public string name;
     public float value;
+    public bool overwriteGreater;
+    public bool overwriteLesser;
 }
