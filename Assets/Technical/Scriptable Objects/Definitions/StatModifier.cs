@@ -7,9 +7,9 @@ using UnityEngine;
 public class StatModifier : ScriptableObject, IComparer<StatModifier>
 {
     public float order;
-    public bool fromOffRoad = false;
+    public bool considerOffRoad = false;
     public float duration;
-    [SerializeField] Stat[] stats;
+    public Stat[] stats;
 
     public int Compare(StatModifier x, StatModifier y)
     {
@@ -21,7 +21,7 @@ public class StatModifier : ScriptableObject, IComparer<StatModifier>
 public class Stat
 {
     public string name;
-    public float value;
-    public bool overwriteGreater;
-    public bool overwriteLesser;
+    public float value = 1.0f;
+    public bool overwriteGreater = false;
+    public bool overwriteLesser = false;
 }

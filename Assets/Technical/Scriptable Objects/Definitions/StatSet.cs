@@ -5,13 +5,14 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Stat Set", menuName = "Stat Thing/Stat Set")]
 public class StatSet : ScriptableObject
 {
-    [SerializeField] protected float topSpeed = 0;
-    [SerializeField] protected float acceleration = 0;
-    [SerializeField] protected float handling = 0;
-    [SerializeField] protected float weight = 0;
-    [SerializeField] protected float traction = 0;
-    [SerializeField] protected float offroad = 0;
-    protected Hashtable baseStats;
+    [SerializeField] public float topSpeed = 0;
+    [SerializeField] public float acceleration = 0;
+    [SerializeField] public float handling = 0;
+    [SerializeField] public float weight = 0;
+    [SerializeField] public float traction = 0;
+    [SerializeField] public float offroad = 0;
+    public Hashtable baseStats; // Legacy code using the hashtable, do not use for new code
+    public float[]  baseStatsArr;   // New approach using array
     public string[] statNames
     {
         get
@@ -22,7 +23,7 @@ public class StatSet : ScriptableObject
         }
     }
 
-    public void OnEnable() {
+    public void OnEnable() {    // Legacy code using the hashtable, do not use for new code
         baseStats = new Hashtable{
             {"topSpeed", topSpeed},
             {"acceleration", acceleration},
@@ -31,7 +32,7 @@ public class StatSet : ScriptableObject
             {"traction", traction},
             {"offroad", offroad}
         };
-        Debug.Log(baseStats);
+        baseStatsArr = new float[] {topSpeed, acceleration, handling, weight, traction, offroad};
     }
 
     public void SetStat(string name, float value)

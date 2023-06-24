@@ -7,7 +7,7 @@ public class VehicleStatSet : StatSet
 {
     public float frontInfluence;
 
-    new protected void OnEnable() 
+    new protected void OnEnable()
     {
         base.OnEnable();
         baseStats.Add("frontInfluence", frontInfluence);

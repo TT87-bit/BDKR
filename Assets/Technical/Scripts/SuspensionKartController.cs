@@ -115,7 +115,6 @@ public class SuspensionKartController : MonoBehaviour
 
         foreach(string stat in character1Stats.statNames)
         {
-            print(stat);
             if(Array.IndexOf(additiveStats, stat) != -1)
             {
                 float value = character1Stats.GetStat(stat) + character2Stats.GetStat(stat) + vehicleStats.GetStat(stat);

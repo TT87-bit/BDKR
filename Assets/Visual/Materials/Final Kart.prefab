@@ -241,6 +241,7 @@ GameObject:
   - component: {fileID: 7954641325557479120}
   - component: {fileID: 7954641325557479134}
   - component: {fileID: 7954641325557479133}
+  - component: {fileID: 4005489312076343361}
   - component: {fileID: 7954641325557479121}
   - component: {fileID: 7954641325557479132}
   - component: {fileID: 7954641325557479135}
@@ -302,17 +303,25 @@ MonoBehaviour:
   vehicleStats: {fileID: 11400000, guid: 24317fdc13caa6049b5cb0d1febf4518, type: 2}
   character1Stats: {fileID: 0}
   character2Stats: {fileID: 0}
+  activeConfigStats: {fileID: 0}
   suspensionObjects:
   - {fileID: 7954641325417834944}
   - {fileID: 7954641326129773746}
   - {fileID: 7954641324565525587}
   - {fileID: 7954641324615722155}
-  NameArray:
-  - 
-  - 
-  - 
-  MyName: 
   swtichSpeed: 0
+--- !u!114 &4005489312076343361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7954641325557479123}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8eb3cf2ebb58e344a9b8427afee4206e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!65 &7954641325557479121
 BoxCollider:
   m_ObjectHideFlags: 0
