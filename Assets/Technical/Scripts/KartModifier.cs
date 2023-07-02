@@ -12,6 +12,28 @@ public class KartModifier : MonoBehaviour
         RefreshModifiers();
     }
 
+    //Have each modifier's timers count down by the amount of time passed since last frame.
+    private void Update() 
+    {
+        foreach(KeyValuePair<float, StatModifier> modifier in modifierList)
+        {
+            modifier.Value.duration -= Time.deltaTime;
+        }
+    }
+
+    //Remove any modifiers whose timers have counted down to 0. Done in LateUpdate so modifiers that started with a duration of zero could still work, to provide a simple way tp create modifiers that go away as soon as they're not being actively applied by the enviroment/terrain.
+    private void LateUpdate() 
+    {
+        foreach(KeyValuePair<float, StatModifier> modifier in modifierList)
+        {
+            if(modifier.Value.duration <= 0.0)
+            {
+                modifierList.Remove(modifier.Key);
+                RefreshModifiers();
+            }
+        }
+    }
+
     public void Apply(StatModifier modifier)
     {
         Apply(modifier, modifier.duration);
