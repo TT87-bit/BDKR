@@ -4,12 +4,16 @@ using UnityEngine;
 
 public class KartModifier : MonoBehaviour
 {
-    SortedList<float, StatModifier> modifierList = new SortedList<float, StatModifier>();
+    [SerializeField] SortedList<float, StatModifier> modifierList = new SortedList<float, StatModifier>();
     SuspensionKartController kartController = new SuspensionKartController();
     private void Awake() 
     {
         kartController = this.GetComponent<SuspensionKartController>();
-        RefreshModifiers();
+        RefreshModifiedStats();
+    }
+
+    private void Start() {
+        
     }
 
     //Have each modifier's timers count down by the amount of time passed since last frame.
@@ -29,7 +33,7 @@ public class KartModifier : MonoBehaviour
             if(modifier.Value.duration <= 0.0)
             {
                 modifierList.Remove(modifier.Key);
-                RefreshModifiers();
+                RefreshModifiedStats();
             }
         }
     }
@@ -61,7 +65,7 @@ public class KartModifier : MonoBehaviour
         modifierList.Add(mod.order, mod);
 
         // Refresh the list
-        RefreshModifiers();
+        RefreshModifiedStats();
     }
 
     public void Remove(StatModifier modifier)
@@ -71,27 +75,25 @@ public class KartModifier : MonoBehaviour
             if(modifier = listModifier.Value)
             {
                 modifierList.Remove(listModifier.Key);
-                RefreshModifiers();
+                RefreshModifiedStats();
             }
         }
     }
     
     // Updates the list so that the modifiers are in order of their priority value
 
-    //When actually applying modifiers to kart, we'll go down the list (thinking hashtable or heap) of StatModifiers, and for each stat
+    //Goes down the list of StatModifiers, in order of "priority", and for each stat
     //in each modifier, we either multiply it to the current stat lineup at that point or overwrite it with that modifier's value for the
-    //stat
-    public void RefreshModifiers()
+    //stat, depending on which "Overwrite" flags are set.
+    private void RefreshModifiedStats()
     {
-        CharacterStatSet outputStats = new CharacterStatSet();
-        //CharacterStatSet outputStats = new ScriptableObject.CreateInstance(CharacterStatSet());
-        outputStats = kartController.activeConfigStats;
+        kartController.postModifierStats = kartController.activeConfigStats;
     
         foreach(StatModifier modifier in modifierList.Values)
         {
             foreach(Stat stat in modifier.stats)
             {
-                float baseValue = (float)outputStats.baseStats[stat.name];
+                float baseValue = (float)kartController.postModifierStats.baseStatsTable[stat.stat];
 
                 if(stat.overwriteGreater && stat.value > baseValue)
                 {
@@ -104,10 +106,10 @@ public class KartModifier : MonoBehaviour
                 else
                 {
                     float fullOffRoadValue = baseValue * stat.value;
-                    baseValue = modifier.considerOffRoad ? fullOffRoadValue : Mathf.Lerp(fullOffRoadValue, baseValue, (float)outputStats.baseStats["offroad"]);
+                    baseValue = modifier.considerOffRoad ? fullOffRoadValue : Mathf.Lerp(fullOffRoadValue, baseValue, (float)kartController.postModifierStats.baseStatsTable["offroad"]);
                 }
 
-                outputStats.baseStats[stat.name] = baseValue;
+                kartController.postModifierStats.baseStatsTable[stat.stat] = baseValue;
             }
         }
     }

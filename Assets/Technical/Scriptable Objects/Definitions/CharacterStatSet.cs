@@ -10,7 +10,7 @@ public class CharacterStatSet : StatSet
     public new void OnEnable()
     {
         base.OnEnable();
-        baseStats.Add("fallChance", fallChance);
+        baseStatsTable.Add("fallChance", fallChance);
     }
 
 }

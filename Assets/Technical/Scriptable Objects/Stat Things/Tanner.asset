@@ -12,10 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e26c4e649cfd4242bc3a2026ee1cbcd, type: 3}
   m_Name: Tanner
   m_EditorClassIdentifier: 
-  topSpeed: 0
-  acceleration: 0
-  handling: 0
-  weight: 0
-  traction: 0
+  topSpeed: 55
+  acceleration: 55
+  handling: 55
+  weight: 55
+  traction: 55
   offroad: 5
+  baseStatsArr:
+  - 55
+  - 55
+  - 55
+  - 55
+  - 55
+  - 5
   fallChance: 0

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class SuspensionKartController : MonoBehaviour
 {
@@ -9,33 +10,38 @@ public class SuspensionKartController : MonoBehaviour
     [SerializeField] VehicleStatSet vehicleStats;
     [SerializeField] CharacterStatSet character1Stats;
     [SerializeField] CharacterStatSet character2Stats;
-    CharacterStatSet config1Stats;
-    CharacterStatSet config2Stats;
+    [SerializeField] CharacterStatSet config1Stats;
+    [SerializeField] CharacterStatSet config2Stats;
     public CharacterStatSet activeConfigStats; //input for applying modifiers to kart
-    CharacterStatSet postModifierStats; //activeConfigStats after applying modifiers, used for calculations
-    float configTopSpeed;
-    float configAcceleration;
-    float configHandling;
-    float configWeight;
-    float configTraction;
+    public CharacterStatSet postModifierStats; //activeConfigStats after applying modifiers, used for calculations
+
 
     [Header ("Game-Wide Constants")]
     const float handlingToSteerAccelerationMultiplier = 0.5f; //The value multiplied by the kart's current handling stat to find how much the kart should rotate each frame on its way to match the player's steer input
     const float handlingToDriftWidthDividend = 2f;
-    const float topSpeedToReverseTopSpeedMultiplier = 0.5f;
+    const float topSpeedToReverseTopSpeedMultiplier = -0.5f;
     const float accelerationToReverseAccelerationMultiplier = 0.5f;
+    const float pushThresholdForPivotSteer = 0.5f;
     const float speedBonusPerToken = 2f;
     const float drag = 0.1f;
     readonly string[] additiveStats = {"weight"};
     readonly string[] frontOnlyStats = {};
-    readonly string[] backOnlyStats = {};
+    readonly string[] backOnlyStats = {"fallChance"};
+    readonly string[] vehicleOnlyStats = {};
 
     [Header ("Suspension Stuff")]
     [SerializeField] GameObject[] suspensionObjects;
     Suspension[] suspensionScripts;
 
     [Header ("Movement/Physics Calculation")]
-    float wheelPush = 0f; //How far the wheels are "trying" to push the kart forward, before grip is taken into account; purely based on how fast they'd be turning. Negative value means the kart is trying to reverse.
+    float topSpeed;
+    float acceleration;
+    float weight;
+    float handling;
+    float offroad;
+    float traction;
+    float fallChance;
+    float wheelPush = 0f; //How far the wheels are "trying" to push the kart forward, before grip is taken into account; purely based on how fast they'd be spinning. Negative value means the kart is trying to reverse.
     float totalTraction; //The traction stat of the player's current configuration, times the average of all 0-1 traction values each grounded suspension object gets from the bit of floor they're over. Midair wheels will return 0 for this.
     float grippedPush = 0f; //wheelPush * totalTraction.
     float currentSteer = 0f;
@@ -43,10 +49,21 @@ public class SuspensionKartController : MonoBehaviour
     float steerRotation = 0f;
     float driftWidth = 0f;
     float driftRotation = 0f;
-    Vector2 velocityFromWheels; //Oriented to be tangent to the ground normals from the suspension scripts, and so that the Y axis points forward
+    bool isPivoting = false;
+    Vector3 averageGroundNormal;
+    Vector2 velocityFromWheels; //Oriented to be tangent to the ground normals from the suspension scripts, and so that the Y component points forward
     Vector2 previousVelocityFromWheels;
     Vector3 worldVelocity;
     Vector3 previousWorldVelocity;
+
+    [Header ("Inputs")]
+    
+    public InputActionAsset actions;
+    InputAction accelerateInput;
+    InputAction brakeInput;
+    InputAction steerInput;
+    InputAction itemInput;
+    InputAction switchCharacterInput;
     
 
     [Header ("Other")]
@@ -54,12 +71,21 @@ public class SuspensionKartController : MonoBehaviour
     float switchTimer;
 
     private void Awake() 
-    {
+    {   
+        //Defining input actions
+        accelerateInput = actions.FindActionMap("Gameplay").FindAction("Accelerate");
+        brakeInput = actions.FindActionMap("Gameplay").FindAction("Brake/Reverse");
+        steerInput = actions.FindActionMap("Gameplay").FindAction("Steer");
+        itemInput = actions.FindActionMap("Gameplay").FindAction("Item");
+        switchCharacterInput = actions.FindActionMap("Gameplay").FindAction("Switch");
+
+        //Determining base stats for each position of the two characters
         config1Stats = new CharacterStatSet();
         config2Stats = new CharacterStatSet();
         
         CalculateConfigStats();
         activeConfigStats = config1Stats;
+        postModifierStats = activeConfigStats;
 
         suspensionScripts = new Suspension[suspensionObjects.Length];
 
@@ -76,16 +102,54 @@ public class SuspensionKartController : MonoBehaviour
     }
     private void FixedUpdate() 
     {
-        //previousVelocityFromWheels = velocityFromWheels;
-        //previousWorldVelocity = worldVelocity;
-        //if accelerate button is being pressed, wheelPush += configAcceleration * deltaTime;
-        //if brake/reverse button is being pressed, wheelPush -= configAcceleration * deltaTime;
-        //while both buttons are being pressed, and the absolute value of 0 - wheelPush is less than a threshold, increase the player's handling because they're trying to Pivot Steer
-        //clamp wheelPush to be between -configTopSpeed * topSpeedToReverseTopSpeedMultiplier and configTopSpeed
-        //grippedPush = wheelPush * totalTraction;
+        acceleration = postModifierStats.GetStat("acceleration");
+        topSpeed = postModifierStats.GetStat("topSpeed");
+        traction = postModifierStats.GetStat("traction");
+        totalTraction = GetTotalTraction();
+        handling = postModifierStats.GetStat("handling");
+
+        averageGroundNormal = GetGroundNormal();
+
+        Debug.Log("acceleration: " + acceleration);
+        Debug.Log("topSpeed: " + topSpeed);
+
+        previousVelocityFromWheels = velocityFromWheels;
+        previousWorldVelocity = worldVelocity;
+        
+        if(accelerateInput.ReadValue<float>() > 0.0) 
+        {
+           wheelPush += acceleration * Time.deltaTime;
+           Debug.Log("accelerating");
+        }
+        if(brakeInput.ReadValue<float>() > 0.0)
+        {
+            wheelPush -= accelerationToReverseAccelerationMultiplier * postModifierStats.acceleration * Time.deltaTime;
+            Debug.Log("decelerating");
+        }
+        Debug.Log("wheelPush: " + wheelPush);
+        if(brakeInput.ReadValue<float>() > 0.0 && accelerateInput.ReadValue<float>() > 0.0 && wheelPush < pushThresholdForPivotSteer)
+        {
+            Debug.Log("pivoting");
+            isPivoting = true;
+        }
+        else
+        {
+            isPivoting = false;
+        }
+
+        wheelPush = Math.Clamp(wheelPush, topSpeed * topSpeedToReverseTopSpeedMultiplier, topSpeed);
+        grippedPush = wheelPush * totalTraction;
 
         //if currentSteer is less than goalSteer, set currentSteer to max(goalSteer, currentSteer - steer acceleration * deltaTime)
+        if(currentSteer < goalSteer)
+        {
+            currentSteer = Math.Max(goalSteer, currentSteer - handling * handlingToSteerAccelerationMultiplier * Time.deltaTime);
+        }
         //if currentSteer is greater than goalSteer, set currentSteer to min(goalSteer, currentSteer + steer acceleration * deltaTime)
+        if(currentSteer > goalSteer)
+        {
+            currentSteer = Math.Max(goalSteer, currentSteer + handling * handlingToSteerAccelerationMultiplier * Time.deltaTime);
+        }
         //if all the front wheels are grounded, set steerRotation to currentSteer * deltaTime;
 
         //if not drifting
@@ -100,9 +164,22 @@ public class SuspensionKartController : MonoBehaviour
         //  driftRotation = however many degrees of rotation it'd take to make the new velocityFromWheels vector point straight out the kart's side
         
         //velocityFromWheels = lerp(previousVelocityFromWheels, velocityFromWheels, totalTraction);
+        velocityFromWheels = Vector2.Lerp(previousVelocityFromWheels, velocityFromWheels, totalTraction);
         //worldVelocity = new Vector3(velocityFromWheels oriented as specified above);
+        worldVelocity = new Vector3(velocityFromWheels.x, 0, velocityFromWheels.y);
+        worldVelocity = transform.TransformVector(worldVelocity);
         //worldVelocity *= 1 - drag;
         
+    }
+
+    float GetTotalTraction()
+    {
+        return 1;
+    }
+
+    Vector3 GetGroundNormal()
+    {
+        return new Vector3(0, 1, 0);
     }
 
     /// <summary>
@@ -131,13 +208,28 @@ public class SuspensionKartController : MonoBehaviour
                 config1Stats.SetStat(stat, character2Stats.GetStat(stat));
                 config2Stats.SetStat(stat, character1Stats.GetStat(stat));
             }
+            else if(Array.IndexOf(vehicleOnlyStats, stat) != -1)
+            {
+                config1Stats.SetStat(stat, vehicleStats.GetStat(stat));
+                config2Stats.SetStat(stat, vehicleStats.GetStat(stat));
+            }
             else
             {
                 float value = (character1Stats.GetStat(stat) * frontCharInfluence + character2Stats.GetStat(stat) * backCharInfluence + vehicleStats.GetStat(stat)) / 2;
                 config1Stats.SetStat(stat, value);
                 value = (character2Stats.GetStat(stat) * frontCharInfluence + character1Stats.GetStat(stat) * backCharInfluence + vehicleStats.GetStat(stat)) / 2;
-                config1Stats.SetStat(stat, value);
+                config2Stats.SetStat(stat, value);
             }
         }
+    }
+
+    private void OnEnable() 
+    {
+        actions.FindActionMap("Gameplay").Enable();
+    }
+
+    private void OnDisable() 
+    {
+        actions.FindActionMap("Gameplay").Disable();
     }
 }

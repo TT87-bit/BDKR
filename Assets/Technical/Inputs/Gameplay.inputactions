@@ -7,11 +7,12 @@
             "actions": [
                 {
                     "name": "Accelerate",
-                    "type": "Value",
+                    "type": "Button",
                     "id": "45e87544-0a54-460a-8bcd-3934fa4f93ae",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "Hold(duration=1.401298E-45)",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Steer",
@@ -19,7 +20,8 @@
                     "id": "03d1b645-799c-44bd-a50a-f575bd498342",
                     "expectedControlType": "Axis",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Brake/Reverse",
@@ -27,7 +29,35 @@
                     "id": "df82a570-5b0b-479b-94b3-d91f888823c0",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Item",
+                    "type": "Button",
+                    "id": "13c2b5f5-8109-4844-b290-40a910c8ec44",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Switch",
+                    "type": "Button",
+                    "id": "b6b5ebb4-6459-4587-90dc-8916b97e287e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Aim Item",
+                    "type": "Button",
+                    "id": "f5dba684-540e-4784-8474-45ec86b3e496",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -35,7 +65,7 @@
                     "name": "",
                     "id": "e1769254-2d5b-4735-9d74-d11cdf2663d8",
                     "path": "<Keyboard>/rightShift",
-                    "interactions": "",
+                    "interactions": "Hold",
                     "processors": "",
                     "groups": "Default",
                     "action": "Accelerate",
@@ -94,6 +124,39 @@
                     "processors": "",
                     "groups": "Default",
                     "action": "Brake/Reverse",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0b6bd949-1a13-49d5-b1b4-c888a609292c",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Item",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c3c95918-f228-45c9-994e-b275af7a8689",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Switch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "db55fe72-8e82-47a6-9aee-4f8a39dcc824",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Aim Item",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -20,7 +20,7 @@ public class StatModifier : ScriptableObject, IComparer<StatModifier>
 [System.Serializable]
 public class Stat
 {
-    public string name;
+    public string stat;
     public float value = 1.0f;
     public bool overwriteGreater = false;
     public bool overwriteLesser = false;

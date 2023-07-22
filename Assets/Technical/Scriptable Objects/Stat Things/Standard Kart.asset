@@ -12,5 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1f452ca6de79fb44aa54dbeb2d76986, type: 3}
   m_Name: Standard Kart
   m_EditorClassIdentifier: 
-  stats: {fileID: 11400000, guid: 70eff2822c219954da390abb17a31c9b, type: 2}
+  topSpeed: 60
+  acceleration: 34
+  handling: 234
+  weight: 21
+  traction: 21
+  offroad: 32
+  baseStatsArr:
+  - 60
+  - 34
+  - 234
+  - 21
+  - 21
+  - 32
   frontInfluence: 0.6

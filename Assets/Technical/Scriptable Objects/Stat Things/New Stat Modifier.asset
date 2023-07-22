@@ -13,7 +13,10 @@ MonoBehaviour:
   m_Name: New Stat Modifier
   m_EditorClassIdentifier: 
   order: 0
-  overwriteGreater: 0
-  overwriteLesser: 0
-  fromOffRoad: 0
-  stats: []
+  considerOffRoad: 0
+  duration: 0
+  stats:
+  - stat: 
+    value: 0
+    overwriteGreater: 0
+    overwriteLesser: 0

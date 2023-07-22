@@ -10,6 +10,6 @@ public class VehicleStatSet : StatSet
     new protected void OnEnable()
     {
         base.OnEnable();
-        baseStats.Add("frontInfluence", frontInfluence);
+        baseStatsTable.Add("frontInfluence", frontInfluence);
     }
 }
