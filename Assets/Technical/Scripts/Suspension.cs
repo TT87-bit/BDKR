@@ -26,8 +26,8 @@ public class Suspension : MonoBehaviour
     [SerializeField] float wheelRadius;
 
     [Header ("Ground Information")]
-    bool touchingGround;
-    Vector3 groundNormal;
+    public bool touchingGround;
+    public Vector3 groundNormal;
     void Awake()
     {
         rb = transform.root.GetComponent<Rigidbody>();
@@ -40,6 +40,9 @@ public class Suspension : MonoBehaviour
     {
         if(Physics.Raycast(transform.position, -transform.up, out RaycastHit hit, maxLength + wheelRadius))
         {
+            touchingGround = true;
+            groundNormal = hit.normal;
+
             previousLength = springLength;
             springLength = hit.distance - wheelRadius;
             springLength = Mathf.Clamp(springLength, minLength, maxLength);
@@ -49,6 +52,10 @@ public class Suspension : MonoBehaviour
 
             suspensionForce = (springForce + damperForce) * transform.up;
             rb.AddForceAtPosition(suspensionForce, hit.point);
+        }
+        else
+        {
+            touchingGround = false;
         }
     }
 

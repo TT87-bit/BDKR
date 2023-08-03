@@ -179,7 +179,17 @@ public class SuspensionKartController : MonoBehaviour
 
     Vector3 GetGroundNormal()
     {
-        return new Vector3(0, 1, 0);
+        Vector3 outputNormal;
+
+        foreach(Suspension wheel in suspensionScripts)
+        {
+            if(wheel.touchingGround)
+            {
+                outputNormal += wheel.groundNormal;
+            }
+        }
+
+        return new outputNormal.normalized();
     }
 
     /// <summary>
