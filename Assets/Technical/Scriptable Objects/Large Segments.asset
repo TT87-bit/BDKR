@@ -9,15 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 284e3a0e607ae27408c454c153b7c7bb, type: 3}
-  m_Name: New Stat Modifier
+  m_Script: {fileID: 11500000, guid: ba794cf8517bf4044bf2474a1de4b30d, type: 3}
+  m_Name: Large Segments
   m_EditorClassIdentifier: 
-  order: 0
-  overwriteGreater: 0
-  overwriteLesser: 0
-  fromOffRoad: 0
-  stats:
-  - name: 
-    value: 0
-  - name: 
-    value: 0
+  characters: []

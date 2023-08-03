@@ -10,7 +10,8 @@ Material:
   m_Name: Standard Kart
   m_Shader: {fileID: -6465566751694194690, guid: 1e2a26594d1a4694c95b8c61fe807a04,
     type: 3}
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _USE_OBJECTIVE_BRIGHTNESS_FOR_PAINT
   m_InvalidKeywords:
   - _SPECULAR_SETUP
   m_LightmapFlags: 4
@@ -127,6 +128,7 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Surface: 0
+    - _USE_OBJECTIVE_BRIGHTNESS_FOR_PAINT: 1
     - _WorkflowMode: 0
     - _ZWrite: 1
     m_Colors:
